@@ -72,9 +72,7 @@ module.exports = {
     // Note: once you set this property, do not change it - doing so will prevent
     // node-red from being able to decrypt your existing credentials and they will be
     // lost.
-    // TODO: Create this secret in the installer. Just use Vault's random generator. 
-    //       Will also nee to add secret to docker-compose
-    //credentialSecret: fs.readFileSync('/run/secrets/cred_secret').trim(), //  c"a-secret-key",
+    credentialSecret: fs.readFileSync('/run/secrets/cred_secret'), //  c"a-secret-key",
 
     // By default, all user data is stored in the Node-RED install directory. To
     // use a different location, the following property can be used
