@@ -235,5 +235,13 @@ module.exports = {
             // Whether or not to include audit events in the log output
             audit: false
         }
-    }
+    },
+
+    
+    // Enable projects: https://nodered.org/docs/user-guide/projects/
+    editorTheme: {
+       projects: {
+           enabled: true
+       }
+   }
 }
