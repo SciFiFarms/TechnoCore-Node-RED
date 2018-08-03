@@ -72,7 +72,10 @@ module.exports = {
     // Note: once you set this property, do not change it - doing so will prevent
     // node-red from being able to decrypt your existing credentials and they will be
     // lost.
-    credentialSecret: fs.readFileSync('/run/secrets/cred_secret'), //  c"a-secret-key",
+
+    // I tried to use this. It caused the application to crash. I'd rather encrypt credentials, 
+    // but I figure that as long as I'm only storing paths to the actual credentials, I'm not that worried about encrypting it. 
+    //credentialSecret: fs.readFileSync('/run/secrets/cred_secret'), //  c"a-secret-key",
 
     // By default, all user data is stored in the Node-RED install directory. To
     // use a different location, the following property can be used
@@ -241,5 +244,15 @@ module.exports = {
        projects: {
            enabled: true
        }
+   },
+
+   // Store the context.
+    contextStorage: {
+        default: {
+            module: "localfilesystem",
+            config:{                  // config
+                dir:"/data/context"
+            }
+        }
    }
 }

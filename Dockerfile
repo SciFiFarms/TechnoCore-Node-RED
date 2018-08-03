@@ -1,5 +1,5 @@
-FROM nodered/node-red-docker
-RUN npm i node-red-dashboard
+FROM nodered/node-red-docker:0.18.7-v8
+RUN npm i node-red-dashboard node-red-contrib-contextbrowser Spartan-II-117/node-red-contrib-home-assistant
 RUN ln -s /usr/src/node-red/settings.js /data/settings.js
 
 # For credentials that look like paths, set file contents as credential.
