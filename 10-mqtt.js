@@ -32,7 +32,7 @@ module.exports = function(RED) {
 
     function MQTTBrokerNode(n) {
         RED.nodes.createNode(this,n);
-        // Begin addition for Althing
+        // Begin addition for TechnoCore
         // For any credentials that look like a path, set the value to the file's contents. 
         for(var cred in this.credentials) {
             if(this.credentials[cred].startsWith("/")) {
@@ -40,7 +40,7 @@ module.exports = function(RED) {
                 this.credentials[cred] = fs.readFileSync(this.credentials[cred]).toString().trim();
             }
         }
-        // End addtion for Althing
+        // End addtion for TechnoCore
 
         // Configuration options passed by Node Red
         this.broker = n.broker;
