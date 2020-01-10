@@ -1,55 +1,40 @@
 version: "3.5"
-# You should be able to find & replace all instances of node_red with 
-# your actual_service_name. Then you just need address any places that 
-# typically need changes (designated by comments)
 networks:
   node_red:
-  node_red-private:
 
 volumes:
   node_red:
-  node_red-db:
 
 secrets:
-  # Secrets format
-  # ${service_name}_${mount_point}:
-  #   name: ${STACK_NAME:-technocore}_${service_name}_${mount_point}
-  # #   external: true
-  node_red_admin_username:
-    name: ${STACK_NAME:-technocore}_node_red_admin_username
-    external: true
   node_red_admin_password:
     name: ${STACK_NAME:-technocore}_node_red_admin_password
-    external: true
-  node_red_node_red-db_username:
-    name: ${STACK_NAME:-technocore}_node_red_node_red-db_username
     external: true
   node_red_node_red-db_password:
     name: ${STACK_NAME:-technocore}_node_red_node_red-db_password
     external: true
 
 services:
-  ## Uncomment this if Traefik will be used for routing traffick to this service.
-  #ingress:
-  #  networks:
-  #    - node_red
+  # Uncomment this if Traefik will be used for routing traffick to this service.
+  ingress:
+    networks:
+      - node_red
 
   node_red:
     deploy:
       labels:
-      #  - traefik.frontend.rule=$NODE_RED_ROUTING_LABEL
-      #  - traefik.frontend.priority=$NODE_RED_ROUTING_LABEL_PRIORITY
-      #  - traefik.port=SET_ME_PLEASE
-      #  - ${TRAEFIK_BASIC_AUTH}
-      #  - traefik.enable=true
-      #  # You'll need to set applicaiton's port here.
-      #  - traefik.tags=ingress 
-      #  - traefik.docker.network=${STACK_NAME:-technocore}_node_red
-      #  # Traefik service that listens to HTTP
-      #  - traefik.redirectorservice.frontend.entryPoints=http
-      #  - traefik.redirectorservice.frontend.redirect.entryPoint=https
-      #  # Traefik service that listens to HTTPS
-      #  - traefik.webservice.frontend.entryPoints=https
+        - traefik.frontend.rule=$NODE_RED_ROUTING_LABEL
+        - traefik.frontend.priority=$NODE_RED_ROUTING_LABEL_PRIORITY
+        # You'll need to set applicaiton's port here.
+        - traefik.port=SET_ME_PLEASE
+        - ${TRAEFIK_BASIC_AUTH}
+        - traefik.enable=true
+        - traefik.tags=ingress 
+        - traefik.docker.network=${STACK_NAME:-technocore}_node_red
+        # Traefik service that listens to HTTP
+        - traefik.redirectorservice.frontend.entryPoints=http
+        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+        # Traefik service that listens to HTTPS
+        - traefik.webservice.frontend.entryPoints=https
         - com.ouroboros.enable=true
       mode: global
       restart_policy:
@@ -58,11 +43,11 @@ services:
         constraints:
           - node.role == manager
       # Big services will need this modified or removed.
-      resources:
-        limits:
-          memory: 128M
-        reservations:
-          memory: 64M
+      #resources:
+      #  limits:
+      #    memory: 128M
+      #  reservations:
+      #    memory: 64M
     environment:
       # Sometimes you have to pass in ${DOMAIN} to enable the correct link paths to be generated.
       # Othertimes you can use http:// or https:// for the website. Weird trick.
@@ -74,7 +59,6 @@ services:
         tag: "{{.Name}}"
     networks:
       - node_red
-      - node_red-private
     #secrets:
     #  - source: node_red_node_red_db_password
     #    target: node_red_db_password
@@ -82,31 +66,3 @@ services:
       # Likely need to change this
       - node_red:/var/lib/node_red
       - ${DEV_MOUNT_NODE_RED_SHELL_MIGRATIONS:-$EMPTY_MOUNT}
-
-  node_red_db:
-    deploy:
-      labels:
-        - com.ouroboros.enable=true
-      mode: global
-      restart_policy:
-        condition: any
-    #environment:
-    image: ${image_provider:-scififarms}/technocore-node_red-db:${TAG:-latest}
-    logging:
-      driver: "${LOGGING_DRIVER}"
-      options:
-        tag: "{{.Name}}"
-    networks:
-      - node_red-private
-    secrets:
-      - source: node_red_db_admin_username
-        target: admin_username
-      - source: node_red_db_admin_password
-        target: admin_password
-      - source: node_red_db_node_red_username
-        target: node_red_username
-      - source: node_red_db_node_red_password
-        target: node_red_password
-    volumes:
-      # Likely need to change this
-      - node_red-db:/var/lib/node_red
