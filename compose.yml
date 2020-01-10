@@ -5,14 +5,6 @@ networks:
 volumes:
   node_red:
 
-secrets:
-  node_red_admin_password:
-    name: ${STACK_NAME:-technocore}_node_red_admin_password
-    external: true
-  node_red_node_red-db_password:
-    name: ${STACK_NAME:-technocore}_node_red_node_red-db_password
-    external: true
-
 services:
   # Uncomment this if Traefik will be used for routing traffick to this service.
   ingress:
@@ -25,7 +17,7 @@ services:
         - traefik.frontend.rule=$NODE_RED_ROUTING_LABEL
         - traefik.frontend.priority=$NODE_RED_ROUTING_LABEL_PRIORITY
         # You'll need to set applicaiton's port here.
-        - traefik.port=SET_ME_PLEASE
+        - traefik.port=1880
         - ${TRAEFIK_BASIC_AUTH}
         - traefik.enable=true
         - traefik.tags=ingress 
@@ -52,17 +44,21 @@ services:
       # Sometimes you have to pass in ${DOMAIN} to enable the correct link paths to be generated.
       # Othertimes you can use http:// or https:// for the website. Weird trick.
       - ADMIN_USER=${ADMIN_USER}
-    image: ${image_provider:-scififarms}/technocore-node_red:${TAG:-latest}
+    image: ${image_provider:-scififarms}/technocore-node-red:${TAG:-latest}
     logging:
       driver: "${LOGGING_DRIVER}"
       options:
         tag: "{{.Name}}"
     networks:
       - node_red
-    #secrets:
-    #  - source: node_red_node_red_db_password
-    #    target: node_red_db_password
+    #ports:
+    #  # Used for debugging. Simply add "--inspect" to the "start" object in /usr/src/node-red/package.json
+    #  # Should be doable via env var: https://nodejs.org/api/cli.html#cli_node_options
+    #  - "9229:9229"
+    secrets:
+      - source: node_red_mqtt_password
+        target: mqtt_password
+    user: "0" #${UID}
     volumes:
-      # Likely need to change this
-      - node_red:/var/lib/node_red
+      - node-red:/data
       - ${DEV_MOUNT_NODE_RED_SHELL_MIGRATIONS:-$EMPTY_MOUNT}
