@@ -55,10 +55,7 @@ services:
     #  # Used for debugging. Simply add "--inspect" to the "start" object in /usr/src/node-red/package.json
     #  # Should be doable via env var: https://nodejs.org/api/cli.html#cli_node_options
     #  - "9229:9229"
-    secrets:
-      - source: node_red_mqtt_password
-        target: mqtt_password
     user: "0" #${UID}
     volumes:
-      - node-red:/data
+      - node_red:/data
       - ${DEV_MOUNT_NODE_RED_SHELL_MIGRATIONS:-$EMPTY_MOUNT}
