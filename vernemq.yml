@@ -1,0 +1,21 @@
+version: "3.5"
+secrets:
+  mqtt_node_red_password:
+    name: ${STACK_NAME:-technocore}_mqtt_node_red_password
+    external: true
+  node_red_mqtt_password:
+    name: ${STACK_NAME:-technocore}_node_red_mqtt_password
+    external: true
+
+services:
+  mqtt:
+    networks:
+      - node_red
+    secrets:
+      - source: mqtt_node_red_password
+        target: users/esphome
+
+  node_red:
+    secrets:
+      - source: node_red_mqtt_password
+        target: mqtt_password

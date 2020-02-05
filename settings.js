@@ -139,10 +139,10 @@ module.exports = {
     // See the comment at the top of this file on how to load the `fs` module used by
     // this setting.
     //
-    https: {
-        key: fs.readFileSync('/run/secrets/key'),
-        cert: fs.readFileSync('/run/secrets/cert_bundle')
-    },
+    //https: {
+    //    key: fs.readFileSync('/run/secrets/key'),
+    //    cert: fs.readFileSync('/run/secrets/cert_bundle')
+    //},
 
     // The following property can be used to cause insecure HTTP connections to
     // be redirected to HTTPS.

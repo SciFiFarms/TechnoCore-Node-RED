@@ -1,0 +1,61 @@
+version: "3.5"
+networks:
+  node_red:
+
+volumes:
+  node_red:
+
+services:
+  # Uncomment this if Traefik will be used for routing traffick to this service.
+  ingress:
+    networks:
+      - node_red
+
+  node_red:
+    deploy:
+      labels:
+        - traefik.frontend.rule=$NODE_RED_ROUTING_LABEL
+        - traefik.frontend.priority=$NODE_RED_ROUTING_LABEL_PRIORITY
+        # You'll need to set applicaiton's port here.
+        - traefik.port=1880
+        - ${TRAEFIK_BASIC_AUTH}
+        - traefik.enable=true
+        - traefik.tags=ingress 
+        - traefik.docker.network=${STACK_NAME:-technocore}_node_red
+        # Traefik service that listens to HTTP
+        - traefik.redirectorservice.frontend.entryPoints=http
+        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+        # Traefik service that listens to HTTPS
+        - traefik.webservice.frontend.entryPoints=https
+        - com.ouroboros.enable=true
+      mode: global
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+      # Big services will need this modified or removed.
+      #resources:
+      #  limits:
+      #    memory: 128M
+      #  reservations:
+      #    memory: 64M
+    environment:
+      # Sometimes you have to pass in ${DOMAIN} to enable the correct link paths to be generated.
+      # Othertimes you can use http:// or https:// for the website. Weird trick.
+      - ADMIN_USER=${ADMIN_USER}
+    image: ${image_provider:-scififarms}/technocore-node-red:${TAG:-latest}
+    logging:
+      driver: "${LOGGING_DRIVER}"
+      options:
+        tag: "{{.Name}}"
+    networks:
+      - node_red
+    #ports:
+    #  # Used for debugging. Simply add "--inspect" to the "start" object in /usr/src/node-red/package.json
+    #  # Should be doable via env var: https://nodejs.org/api/cli.html#cli_node_options
+    #  - "9229:9229"
+    user: "0" #${UID}
+    volumes:
+      - node_red:/data
+      - ${DEV_MOUNT_NODE_RED_SHELL_MIGRATIONS:-$EMPTY_MOUNT}
