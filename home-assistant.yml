@@ -4,3 +4,5 @@ services:
   home_assistant:
     environment:
       - "SIDEBAR_NODE_RED=        Automation: Node-RED|node_red.$DOMAIN|mdi:resistor-nodes"
+    networks:
+      - node_red

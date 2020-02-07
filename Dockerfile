@@ -1,4 +1,4 @@
-FROM nodered/node-red-docker:0.18.7-v8
+FROM nodered/node-red:1.0.3-2
 RUN npm i node-red-dashboard node-red-contrib-contextbrowser Spartan-II-117/node-red-contrib-home-assistant
 RUN ln -s /usr/src/node-red/settings.js /data/settings.js
 
