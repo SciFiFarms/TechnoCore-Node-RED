@@ -1,5 +1,5 @@
 FROM nodered/node-red:1.0.3-2
-RUN npm i node-red-dashboard node-red-contrib-contextbrowser node-red-contrib-home-assistant-websocket
+RUN npm i node-red-dashboard node-red-contrib-contextbrowser Spartan-II-117/node-red-contrib-home-assistant
 RUN ln -s /usr/src/node-red/settings.js /data/settings.js
 
 # For credentials that look like paths, set file contents as credential.
